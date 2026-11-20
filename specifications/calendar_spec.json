@@ -1,0 +1,49 @@
+{
+  "specification_name": "Спецификация требований к планированию и валидации событий календаря (SDD)",
+  "version": "1.0",
+  "examples_calendar_schedule": [
+    {
+      "case_id": "SDD-SCHED-01",
+      "description": "Выборка и сортировка событий на конкретную дату",
+      "initial_events": [
+        {"title": "Вечерний спорт", "event_date": "2026-11-20", "start_time": "19:00", "end_time": "20:30", "category": "personal"},
+        {"title": "Утренний стендап", "event_date": "2026-11-20", "start_time": "09:30", "end_time": "10:00", "category": "work"},
+        {"title": "Семинар по верификации", "event_date": "2026-11-20", "start_time": "13:00", "end_time": "14:30", "category": "study"},
+        {"title": "Событие другого дня", "event_date": "2026-11-21", "start_time": "10:00", "end_time": "11:00", "category": "work"}
+      ],
+      "query_filter": {"event_date": "2026-11-20"},
+      "expected_result": {
+        "count": 3,
+        "ordered_titles": ["Утренний стендап", "Семинар по верификации", "Вечерний спорт"]
+      }
+    },
+    {
+      "case_id": "SDD-SCHED-02",
+      "description": "Фильтрация событий по категории за диапазон дат",
+      "initial_events": [
+        {"title": "Лекция 1", "event_date": "2026-11-15", "start_time": "09:00", "end_time": "10:30", "category": "study"},
+        {"title": "Встреча 1", "event_date": "2026-11-16", "start_time": "11:00", "end_time": "12:00", "category": "work"},
+        {"title": "Лабораторная", "event_date": "2026-11-22", "start_time": "14:00", "end_time": "17:00", "category": "study"},
+        {"title": "Экзамен вне диапазона", "event_date": "2026-12-05", "start_time": "09:00", "end_time": "13:00", "category": "study"}
+      ],
+      "query_filter": {"start_date": "2026-11-10", "end_date": "2026-11-30", "category": "study"},
+      "expected_result": {
+        "count": 2,
+        "ordered_titles": ["Лекция 1", "Лабораторная"]
+      }
+    }
+  ],
+  "examples_date_time_validation": [
+    {"date_str": "2026-11-20", "start": "09:00", "end": "10:00", "expected_valid": true, "reason": "Корректные дата и время"},
+    {"date_str": "20-11-2026", "start": "09:00", "end": "10:00", "expected_valid": false, "reason": "Неверный формат даты YYYY-MM-DD"},
+    {"date_str": "2026-11-20", "start": "11:00", "end": "10:00", "expected_valid": false, "reason": "Время начала позже окончания"},
+    {"date_str": "2026-11-20", "start": "12:00", "end": "12:00", "expected_valid": false, "reason": "Нулевая продолжительность (start == end)"},
+    {"date_str": "2026-11-20", "start": "25:00", "end": "26:00", "expected_valid": false, "reason": "Недопустимые часы (> 23)"}
+  ],
+  "examples_conflict_detection": [
+    {"existing_start": "10:00", "existing_end": "11:30", "new_start": "11:00", "new_end": "12:00", "expected_conflict": true, "reason": "Частичное пересечение интервалов"},
+    {"existing_start": "10:00", "existing_end": "11:30", "new_start": "10:15", "new_end": "11:00", "expected_conflict": true, "reason": "Новое событие внутри существующего"},
+    {"existing_start": "10:00", "existing_end": "11:30", "new_start": "11:30", "new_end": "12:30", "expected_conflict": false, "reason": "Стыковка по границе (конфликта нет)"},
+    {"existing_start": "10:00", "existing_end": "11:30", "new_start": "08:30", "new_end": "10:00", "expected_conflict": false, "reason": "Завершение до начала (конфликта нет)"}
+  ]
+}

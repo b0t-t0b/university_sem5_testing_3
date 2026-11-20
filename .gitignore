@@ -1,0 +1,28 @@
+# Python
+__pycache__/
+*.py[cod]
+*$py.class
+
+# Pytest & Coverage
+.pytest_cache/
+.coverage
+.coverage.*
+htmlcov/
+
+# Academic reports & reference folders (не пушатся в Git, остаются на диске)
+submission/
+examples/
+work/
+.agents/
+*.docx
+*.pdf
+AGENTS.md
+ASSIGNMENT.md
+COURSE_CONTEXT.md
+
+# OS and IDE files
+.DS_Store
+Thumbs.db
+.vscode/
+.idea/
+~$*.docx
